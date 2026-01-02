@@ -35,10 +35,16 @@ venv.bak/
 *~
 .DS_Store
 
-# Generated files (optional - uncomment if you don't want to track generated images)
-# generated_card.png
+# Generated files
+generated_card.png
 
-data/*
+# Images - ignore all PNGs except masks
+*.png
+!classifier/data/masks/*.png
+
+# Data files - ignore everything in data directory except masks
+classifier/data/*
+!classifier/data/masks/
 
 # Jupyter Notebook
 .ipynb_checkpoints
