@@ -6,7 +6,7 @@ import torch.nn as nn
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from torchvision import datasets
-
+from torchinfo import summary
 
 from random import Random, shuffle
 from data_generation import SetCardDataset
@@ -15,16 +15,29 @@ from data_generation import SetCardDataset
 from visual_augmentations import augment_card
 from classifier import SetClassifier
 
+def model_stats(model):
+    total_params = sum(p.numel() for p in model.parameters())
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"Total parameters: {total_params}")
+    print(f"Trainable parameters: {trainable_params}")
+    summary(model)
+
+def forward_shape_check(model, device="cuda"):
+    return
 
 
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(0)
+    print(f"Using device: {device}")
 
-    ds = SetCardDataset(n_samples=16, base_seed=42, augment=False)
-    dl = DataLoader(ds, batch_size=16, shuffle=True)
+    ds = SetCardDataset(n_samples=512, base_seed=42, augment=False)
+    dl = DataLoader(ds, batch_size=64, shuffle=True)
 
     model = SetClassifier(channels=64).to(device)
+    #model_stats(model)
+    print(f"Model created:")
+    
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     ce_head = nn.CrossEntropyLoss()
 
